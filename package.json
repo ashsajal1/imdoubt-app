@@ -57,6 +57,7 @@
     "next-nprogress-bar": "^2.3.13",
     "next-shadcn-tsx": "file:",
     "next-themes": "^0.3.0",
+    "pg": "^8.13.3",
     "react": "^18",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
