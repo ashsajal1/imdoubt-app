@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from 'react-day-picker'
+import { Button } from './ui/button'
 
 export default function HeroSection() {
   return (
