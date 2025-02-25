@@ -7,10 +7,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
+import { createDoubt } from "@/actions/action";
 
 // Define the schema for validation
 const doubtSchema = z.object({
-  doubt: z
+  content: z
     .string()
     .min(20, "Doubt must be at least 20 characters.")
     .max(250, "Doubt cannot exceed 250 characters."),
@@ -30,9 +31,11 @@ export default function DoubtForm() {
 
   const [submittedDoubt, setSubmittedDoubt] = useState<string | null>(null);
 
-  const onSubmit = (data: DoubtFormData) => {
+  const onSubmit = async (data: DoubtFormData) => {
     console.log("Submitted:", data);
-    setSubmittedDoubt(data.doubt);
+    const createdDoubt = await createDoubt(data.content);
+    console.log("Created doubt : ", createdDoubt);
+    setSubmittedDoubt(data.content);
   };
 
   return (
@@ -42,10 +45,10 @@ export default function DoubtForm() {
         <Textarea
           id="doubt"
           placeholder="Enter your doubt statement, e.g., Internet is fake."
-          {...register("doubt")}
+          {...register("content")}
         />
-        {errors.doubt && (
-          <p className="text-red-500 text-sm mt-1">{errors.doubt.message}</p>
+        {errors.content && (
+          <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
         )}
         <Button type="submit" className="mt-3" disabled={isSubmitting}>
           {isSubmitting ? "Submitting..." : "Submit"}
