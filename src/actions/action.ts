@@ -6,19 +6,23 @@ import { auth } from "@clerk/nextjs/server";
 
 export const createDoubt = async (content: string) => {
   try {
-    const { userId } = auth();
-    if (!userId) {
+    const user = auth();
+    if (user.userId === null) {
       throw new Error("User not logged in.");
     }
-    const doubt = await db.insert(doubts).values({
-      user_id: userId!,
-      content: content,
-    });
+    const doubt = await db
+      .insert(doubts)
+      .values({
+        user_id: user.userId,
+        content,
+      })
+      .returning();
 
-    if (doubt) {
-      return doubt;
-    }
+    return doubt ? { ok: true } : { error: "Doubt not created." };
   } catch (error) {
-    return error;
+    if (error instanceof Error) {
+      return { ok: false, error: error.message };
+    }
+    return { ok: false, error: "Unknown error" };
   }
 };
