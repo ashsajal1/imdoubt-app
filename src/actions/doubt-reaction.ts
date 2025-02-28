@@ -3,7 +3,7 @@
 import { db } from "@/db/drizzle"
 import { doubts, doubtReactions } from "@/db/schema"
 import { auth } from "@clerk/nextjs/server"
-import { and, eq } from "drizzle-orm"
+import { and, eq, sql } from "drizzle-orm"
 
 type ReactionType = 'right' | 'wrong'
 
@@ -84,13 +84,14 @@ export async function toggleReaction(doubtId: number, reactionType: ReactionType
       return { ok: true, action: 'updated' }
     }
 
-    // Add new reaction
+    // Add new reaction with proper timestamp
     await db
       .insert(doubtReactions)
       .values({
         doubt_id: doubtId,
         user_id: userId,
-        is_right: reactionType === 'right'
+        is_right: reactionType === 'right',
+        created_at: sql`CURRENT_TIMESTAMP`
       })
 
     // Update counts
@@ -98,11 +99,12 @@ export async function toggleReaction(doubtId: number, reactionType: ReactionType
       .update(doubts)
       .set({
         right_count: reactionType === 'right' 
-          ? doubts.right_count + 1 
+          ? sql`${doubts.right_count} + 1` 
           : doubts.right_count,
         wrong_count: reactionType === 'wrong' 
-          ? doubts.wrong_count + 1 
-          : doubts.wrong_count
+          ? sql`${doubts.wrong_count} + 1` 
+          : doubts.wrong_count,
+        updated_at: sql`CURRENT_TIMESTAMP`
       })
       .where(eq(doubts.id, doubtId))
 
