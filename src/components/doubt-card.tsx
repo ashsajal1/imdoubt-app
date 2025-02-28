@@ -1,11 +1,15 @@
+"use client"
+
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { formatDistanceToNow } from 'date-fns'
 import { Button } from "./ui/button"
 import { CheckCircle, XCircle } from "lucide-react"
 import { useState } from "react"
+import { toggleReaction } from "@/actions/doubt-reaction"
 
 interface DoubtCardProps {
+  id: number
   content: string
   createdAt: Date
   authorName?: string
@@ -17,6 +21,7 @@ interface DoubtCardProps {
 }
 
 export function DoubtCard({
+  id,
   content,
   createdAt,
   authorName = "Anonymous",
@@ -26,6 +31,23 @@ export function DoubtCard({
   onWrong,
   userReaction
 }: DoubtCardProps) {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleReaction = async (type: 'right' | 'wrong') => {
+    try {
+      setIsLoading(true)
+      const result = await toggleReaction(id, type)
+      if (!result.ok) {
+        throw new Error(result.error)
+      }
+      // Optionally refresh the page or update counts locally
+    } catch (error) {
+      console.error('Failed to toggle reaction:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <Card className="w-full mb-4">
       <CardHeader className="flex flex-row items-center gap-4">
@@ -47,14 +69,16 @@ export function DoubtCard({
         <div className="flex items-center gap-2">
           <Button
             variant={userReaction === 'right' ? 'default' : 'outline'}
-            onClick={onRight}
+            onClick={() => handleReaction('right')}
+            disabled={isLoading}
           >
             <CheckCircle className="mr-2 h-4 w-4" />
             {rightCount}
           </Button>
           <Button
             variant={userReaction === 'wrong' ? 'default' : 'outline'}
-            onClick={onWrong}
+            onClick={() => handleReaction('wrong')}
+            disabled={isLoading}
           >
             <XCircle className="mr-2 h-4 w-4" />
             {wrongCount}
