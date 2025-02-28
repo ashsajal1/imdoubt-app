@@ -35,6 +35,7 @@ export default function DoubtForm() {
   const onSubmit = async (data: DoubtFormData) => {
     try {
       setAuthError(null);
+      setSubmittedDoubt(null); // Reset previous submission
       console.log("Submitting doubt:", data);
       const response = await createDoubt(data.content);
       console.log("Doubt submission response:", response);
@@ -46,31 +47,30 @@ export default function DoubtForm() {
         if (response.error === 'UNAUTHORIZED') {
           setAuthError("Please log in to submit a doubt");
         } else {
-          console.error("Error submitting doubt:", response.error);
+          setAuthError(response.error || "An error occurred while submitting");
         }
       }
     } catch (error) {
+      setAuthError("An unexpected error occurred");
       console.error("Exception while submitting doubt:", error);
     }
   };
 
   return (
     <div>
-      {authError && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
-          <p>{authError}</p>
-        </div>
-      )}
-      
       <form onSubmit={handleSubmit(onSubmit)}>
         <Label htmlFor="doubt">Post a doubt.</Label>
         <Textarea
           id="doubt"
           placeholder="Enter your doubt statement, e.g., Internet is fake."
+          className={`${authError ? 'border-red-500' : ''}`}
           {...register("content")}
         />
         {errors.content && (
           <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
+        )}
+        {authError && (
+          <p className="text-red-500 text-sm mt-1">{authError}</p>
         )}
         <Button type="submit" className="mt-3" disabled={isSubmitting}>
           {isSubmitting ? "Submitting..." : "Submit"}
