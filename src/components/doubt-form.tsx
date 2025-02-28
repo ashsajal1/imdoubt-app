@@ -32,10 +32,20 @@ export default function DoubtForm() {
   const [submittedDoubt, setSubmittedDoubt] = useState<string | null>(null);
 
   const onSubmit = async (data: DoubtFormData) => {
-    console.log("Submitted:", data);
-    const createdDoubt = await createDoubt(data.content);
-    console.log("Created doubt : ", createdDoubt);
-    setSubmittedDoubt(data.content);
+    try {
+      console.log("Submitting doubt:", data);
+      const response = await createDoubt(data.content);
+      console.log("Doubt submission response:", response);
+      
+      if (response.ok) {
+        setSubmittedDoubt(data.content);
+        console.log("Doubt submitted successfully!");
+      } else {
+        console.error("Error submitting doubt:", response.error);
+      }
+    } catch (error) {
+      console.error("Exception while submitting doubt:", error);
+    }
   };
 
   return (
