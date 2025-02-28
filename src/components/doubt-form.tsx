@@ -2,37 +2,26 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { createDoubt } from "@/actions/action";
-
-// Define the schema for validation
-const doubtSchema = z.object({
-  content: z
-    .string()
-    .min(10, "Doubt must be at least 20 characters.")
-    .max(250, "Doubt cannot exceed 250 characters."),
-});
-
-// Define TypeScript type from schema
-type DoubtFormData = z.infer<typeof doubtSchema>;
+import { doubtSchema, type DoubtInput } from "@/lib/validations/doubt";
 
 export default function DoubtForm() {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<DoubtFormData>({
+  } = useForm<DoubtInput>({
     resolver: zodResolver(doubtSchema),
   });
 
   const [submittedDoubt, setSubmittedDoubt] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
 
-  const onSubmit = async (data: DoubtFormData) => {
+  const onSubmit = async (data: DoubtInput) => {
     try {
       setAuthError(null);
       setSubmittedDoubt(null); // Reset previous submission
