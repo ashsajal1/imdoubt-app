@@ -3,13 +3,32 @@
 import { db } from "@/db/drizzle";
 import { doubts } from "@/db/schema";
 import { auth } from "@clerk/nextjs/server";
+import { z } from "zod";
+
+// Define the schema for validation
+const doubtSchema = z.object({
+  content: z
+    .string()
+    .min(10, "Doubt must be at least 20 characters.")
+    .max(250, "Doubt cannot exceed 250 characters."),
+});
 
 export const createDoubt = async (content: string) => {
   try {
+    // Validate the content
+    const result = doubtSchema.safeParse({ content });
+    if (!result.success) {
+      return {
+        ok: false,
+        error: result.error.errors[0].message
+      };
+    }
+
     const user = auth();
     if (user.userId === null) {
-      throw new Error("User not logged in.");
+      return { ok: false, error: "UNAUTHORIZED" };
     }
+
     const doubt = await db
       .insert(doubts)
       .values({
