@@ -3,7 +3,7 @@
 import { db } from "@/db/drizzle"
 import { doubts, doubtReactions } from "@/db/schema"
 import { auth } from "@clerk/nextjs/server"
-import { sql } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 
 type ReactionType = 'right' | 'wrong'
 
@@ -16,47 +16,77 @@ export async function toggleReaction(doubtId: number, reactionType: ReactionType
     }
 
     // Check if user already reacted
-    const existingReaction = await db.query.doubtReactions.findFirst({
-      where: (reaction, { eq, and }) => 
-        and(eq(reaction.doubt_id, doubtId), eq(reaction.user_id, userId))
-    })
+    const existingReaction = await db
+      .select()
+      .from(doubtReactions)
+      .where(
+        and(
+          eq(doubtReactions.doubt_id, doubtId),
+          eq(doubtReactions.user_id, userId)
+        )
+      )
+      .limit(1)
+      .then(rows => rows[0])
 
     if (existingReaction) {
       // If same reaction, remove it
       if ((existingReaction.is_right && reactionType === 'right') || 
           (!existingReaction.is_right && reactionType === 'wrong')) {
-        await db.delete(doubtReactions)
-          .where(sql`doubt_id = ${doubtId} AND user_id = ${userId}`)
+        await db
+          .delete(doubtReactions)
+          .where(
+            and(
+              eq(doubtReactions.doubt_id, doubtId),
+              eq(doubtReactions.user_id, userId)
+            )
+          )
         
         // Update counts
-        await db.update(doubts)
+        await db
+          .update(doubts)
           .set({
-            right_count: sql`right_count - CASE WHEN ${existingReaction.is_right} THEN 1 ELSE 0 END`,
-            wrong_count: sql`wrong_count - CASE WHEN NOT ${existingReaction.is_right} THEN 1 ELSE 0 END`
+            right_count: existingReaction.is_right 
+              ? doubts.right_count - 1 
+              : doubts.right_count,
+            wrong_count: !existingReaction.is_right 
+              ? doubts.wrong_count - 1 
+              : doubts.wrong_count
           })
-          .where(sql`id = ${doubtId}`)
+          .where(eq(doubts.id, doubtId))
 
         return { ok: true, action: 'removed' }
       }
 
       // If different reaction, update it
-      await db.update(doubtReactions)
+      await db
+        .update(doubtReactions)
         .set({ is_right: reactionType === 'right' })
-        .where(sql`doubt_id = ${doubtId} AND user_id = ${userId}`)
+        .where(
+          and(
+            eq(doubtReactions.doubt_id, doubtId),
+            eq(doubtReactions.user_id, userId)
+          )
+        )
 
       // Update counts
-      await db.update(doubts)
+      await db
+        .update(doubts)
         .set({
-          right_count: sql`right_count + CASE WHEN ${reactionType === 'right'} THEN 1 ELSE -1 END`,
-          wrong_count: sql`wrong_count + CASE WHEN ${reactionType === 'wrong'} THEN 1 ELSE -1 END`
+          right_count: reactionType === 'right' 
+            ? doubts.right_count + 1 
+            : doubts.right_count - 1,
+          wrong_count: reactionType === 'wrong' 
+            ? doubts.wrong_count + 1 
+            : doubts.wrong_count - 1
         })
-        .where(sql`id = ${doubtId}`)
+        .where(eq(doubts.id, doubtId))
 
       return { ok: true, action: 'updated' }
     }
 
     // Add new reaction
-    await db.insert(doubtReactions)
+    await db
+      .insert(doubtReactions)
       .values({
         doubt_id: doubtId,
         user_id: userId,
@@ -64,12 +94,17 @@ export async function toggleReaction(doubtId: number, reactionType: ReactionType
       })
 
     // Update counts
-    await db.update(doubts)
+    await db
+      .update(doubts)
       .set({
-        right_count: sql`right_count + CASE WHEN ${reactionType === 'right'} THEN 1 ELSE 0 END`,
-        wrong_count: sql`wrong_count + CASE WHEN ${reactionType === 'wrong'} THEN 1 ELSE 0 END`
+        right_count: reactionType === 'right' 
+          ? doubts.right_count + 1 
+          : doubts.right_count,
+        wrong_count: reactionType === 'wrong' 
+          ? doubts.wrong_count + 1 
+          : doubts.wrong_count
       })
-      .where(sql`id = ${doubtId}`)
+      .where(eq(doubts.id, doubtId))
 
     return { ok: true, action: 'added' }
 
