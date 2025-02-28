@@ -12,23 +12,19 @@ interface DoubtCardProps {
   id: number
   content: string
   createdAt: Date
-  authorName?: string
-  rightCount?: number
-  wrongCount?: number
-  onRight?: () => void
-  onWrong?: () => void
-  userReaction?: 'right' | 'wrong' | null
+  authorName: string
+  rightCount: number
+  wrongCount: number
+  userReaction: 'right' | 'wrong' | null
 }
 
 export function DoubtCard({
   id,
   content,
   createdAt,
-  authorName = "Anonymous",
-  rightCount = 0,
-  wrongCount = 0,
-  onRight,
-  onWrong,
+  authorName,
+  rightCount,
+  wrongCount,
   userReaction
 }: DoubtCardProps) {
   const [isLoading, setIsLoading] = useState(false)
