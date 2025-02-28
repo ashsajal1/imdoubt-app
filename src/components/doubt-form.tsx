@@ -13,7 +13,7 @@ import { createDoubt } from "@/actions/action";
 const doubtSchema = z.object({
   content: z
     .string()
-    .min(20, "Doubt must be at least 20 characters.")
+    .min(10, "Doubt must be at least 20 characters.")
     .max(250, "Doubt cannot exceed 250 characters."),
 });
 
