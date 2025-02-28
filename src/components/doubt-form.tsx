@@ -30,9 +30,11 @@ export default function DoubtForm() {
   });
 
   const [submittedDoubt, setSubmittedDoubt] = useState<string | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const onSubmit = async (data: DoubtFormData) => {
     try {
+      setAuthError(null);
       console.log("Submitting doubt:", data);
       const response = await createDoubt(data.content);
       console.log("Doubt submission response:", response);
@@ -41,7 +43,11 @@ export default function DoubtForm() {
         setSubmittedDoubt(data.content);
         console.log("Doubt submitted successfully!");
       } else {
-        console.error("Error submitting doubt:", response.error);
+        if (response.error === 'UNAUTHORIZED') {
+          setAuthError("Please log in to submit a doubt");
+        } else {
+          console.error("Error submitting doubt:", response.error);
+        }
       }
     } catch (error) {
       console.error("Exception while submitting doubt:", error);
@@ -50,6 +56,12 @@ export default function DoubtForm() {
 
   return (
     <div>
+      {authError && (
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+          <p>{authError}</p>
+        </div>
+      )}
+      
       <form onSubmit={handleSubmit(onSubmit)}>
         <Label htmlFor="doubt">Post a doubt.</Label>
         <Textarea
