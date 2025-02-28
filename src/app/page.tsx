@@ -15,7 +15,7 @@ export default async function Home() {
     <main>
       <DoubtForm />
       {doubtsList.map((doubt) => {
-        return <div key={doubt.id}>{doubt.id}</div>;
+        return <div key={doubt.id}>{doubt.content}</div>;
       })}
     </main>
   );
