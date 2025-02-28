@@ -1,16 +1,13 @@
-import DoubtForm from "@/components/doubt-form"
-import HeroSection from "@/components/hero-section"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { db } from "@/db/drizzle"
-import { doubts, doubtReactions } from "@/db/schema"
-import { DoubtCard } from "@/components/doubt-card"
-import { auth } from "@clerk/nextjs"
-import { sql } from "drizzle-orm"
+import { currentUser } from "@clerk/nextjs/server";
+import DoubtForm from "@/components/doubt-form";
+import { db } from "@/db/drizzle";
+import { doubts, doubtReactions } from "@/db/schema";
+import { DoubtCard } from "@/components/doubt-card";
+import { sql } from "drizzle-orm";
 
 export default async function Home() {
-  const { userId } = auth();
+  const user = await currentUser();
+  const userId = user?.id;
 
   const doubtsList = await db
     .select({
@@ -20,7 +17,8 @@ export default async function Home() {
       user_id: doubts.user_id,
       right_count: doubts.right_count,
       wrong_count: doubts.wrong_count,
-      userReaction: userId ? sql<'right' | 'wrong' | null>`
+      userReaction: userId
+        ? sql<"right" | "wrong" | null>`
         CASE 
           WHEN EXISTS (
             SELECT 1 FROM ${doubtReactions} 
@@ -37,7 +35,8 @@ export default async function Home() {
             END
           ELSE NULL
         END
-      ` : sql`NULL`,
+      `
+        : sql`NULL`,
     })
     .from(doubts)
     .limit(5);
