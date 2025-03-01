@@ -36,7 +36,7 @@ export default async function Home() {
           ELSE NULL
         END
       `
-        : sql`NULL`,
+        : sql<"right" | "wrong" | null>`NULL`,
     })
     .from(doubts)
     .limit(5);
@@ -51,8 +51,8 @@ export default async function Home() {
             id={doubt.id}
             content={doubt.content}
             createdAt={doubt.date_time!}
-            rightCount={doubt.right_count}
-            wrongCount={doubt.wrong_count}
+            rightCount={doubt.right_count ?? 0}
+            wrongCount={doubt.wrong_count ?? 0}
             userReaction={doubt.userReaction}
             authorName={doubt.user_id} // You might want to fetch actual user names
           />
