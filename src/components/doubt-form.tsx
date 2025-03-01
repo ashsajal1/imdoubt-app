@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "./ui/button";
@@ -14,35 +14,38 @@ export default function DoubtForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<DoubtInput>({
     resolver: zodResolver(doubtSchema),
   });
 
   const [authError, setAuthError] = useState<string | null>(null);
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const onSubmit = async (data: DoubtInput) => {
-    try {
-      setAuthError(null);
-      console.log("Submitting doubt:", data);
-      const response = await createDoubt(data.content);
-      console.log("Doubt submission response:", response);
+    startTransition(async () => {
+      try {
+        setAuthError(null);
+        console.log("Submitting doubt:", data);
+        const response = await createDoubt(data.content);
+        console.log("Doubt submission response:", response);
 
-      if (response.ok) {
-        console.log("Doubt submitted successfully!");
-        router.refresh(); // Revalidate the path to show the new doubt
-      } else {
-        if (response.error === "UNAUTHORIZED") {
-          setAuthError("Please log in to submit a doubt");
+        if (response.ok) {
+          console.log("Doubt submitted successfully!");
+          router.refresh(); // Revalidate the path to show the new doubt
         } else {
-          setAuthError(response.error || "An error occurred while submitting");
+          if (response.error === "UNAUTHORIZED") {
+            setAuthError("Please log in to submit a doubt");
+          } else {
+            setAuthError(response.error || "An error occurred while submitting");
+          }
         }
+      } catch (error) {
+        setAuthError("An unexpected error occurred");
+        console.error("Exception while submitting doubt:", error);
       }
-    } catch (error) {
-      setAuthError("An unexpected error occurred");
-      console.error("Exception while submitting doubt:", error);
-    }
+    });
   };
 
   return (
@@ -59,8 +62,8 @@ export default function DoubtForm() {
           <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
         )}
         {authError && <p className="text-red-500 text-sm mt-1">{authError}</p>}
-        <Button type="submit" className="mt-3" disabled={isSubmitting}>
-          {isSubmitting ? "Submitting..." : "Submit"}
+        <Button type="submit" className="mt-3" disabled={isPending}>
+          {isPending ? "Creating..." : "Submit"}
         </Button>
       </form>
     </div>
