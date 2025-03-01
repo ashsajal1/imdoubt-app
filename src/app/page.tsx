@@ -1,4 +1,4 @@
-import { currentUser } from "@clerk/nextjs/server";
+import { currentUser, clerkClient } from "@clerk/nextjs/server";
 import DoubtForm from "@/components/doubt-form";
 import { db } from "@/db/drizzle";
 import { doubts, doubtReactions } from "@/db/schema";
@@ -8,6 +8,7 @@ import { sql } from "drizzle-orm";
 export default async function Home() {
   const user = await currentUser();
   const userId = user?.id;
+  const client = clerkClient();
 
   const doubtsList = await db
     .select({
@@ -41,11 +42,27 @@ export default async function Home() {
     .from(doubts)
     .limit(5);
 
+  // Fetch user details for each doubt
+  const doubtsWithUserNames = await Promise.all(
+    doubtsList.map(async (doubt) => {
+      if (!doubt.user_id) {
+        console.warn("Missing user_id for doubt:", doubt);
+        return { ...doubt, authorName: "Unknown" };
+      }
+
+      const user = await client.users.getUser(doubt.user_id);
+      return {
+        ...doubt,
+        authorName: user?.fullName || "Unknown",
+      };
+    })
+  );
+
   return (
     <main className="container mx-auto px-4 py-8">
       <DoubtForm />
       <div className="mt-8">
-        {doubtsList.map((doubt) => (
+        {doubtsWithUserNames.map((doubt) => (
           <DoubtCard
             key={doubt.id}
             id={doubt.id}
@@ -54,7 +71,7 @@ export default async function Home() {
             rightCount={doubt.right_count ?? 0}
             wrongCount={doubt.wrong_count ?? 0}
             userReaction={doubt.userReaction}
-            authorName={doubt.user_id} // You might want to fetch actual user names
+            authorName={doubt.authorName}
           />
         ))}
       </div>
