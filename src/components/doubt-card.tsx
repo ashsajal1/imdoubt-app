@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { formatDistanceToNow } from 'date-fns'
 import { Button } from "./ui/button"
 import { CheckCircle, XCircle } from "lucide-react"
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { toggleReaction } from "@/actions/doubt-reaction"
 
 interface DoubtCardProps {
@@ -27,21 +27,45 @@ export function DoubtCard({
   wrongCount,
   userReaction
 }: DoubtCardProps) {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
+  const [currentRightCount, setCurrentRightCount] = useState(rightCount)
+  const [currentWrongCount, setCurrentWrongCount] = useState(wrongCount)
+  const [currentUserReaction, setCurrentUserReaction] = useState(userReaction)
 
-  const handleReaction = async (type: 'right' | 'wrong') => {
-    try {
-      setIsLoading(true)
-      const result = await toggleReaction(id, type)
-      if (!result.ok) {
-        throw new Error(result.error)
+  const handleReaction = (type: 'right' | 'wrong') => {
+    startTransition(async () => {
+      try {
+        const result = await toggleReaction(id, type)
+        if (!result.ok) {
+          throw new Error(result.error)
+        }
+
+        // Update counts and user reaction locally
+        if (result.action === 'added' || result.action === 'updated') {
+          if (type === 'right') {
+            setCurrentRightCount(currentRightCount + 1)
+            if (currentUserReaction === 'wrong') {
+              setCurrentWrongCount(currentWrongCount - 1)
+            }
+          } else {
+            setCurrentWrongCount(currentWrongCount + 1)
+            if (currentUserReaction === 'right') {
+              setCurrentRightCount(currentRightCount - 1)
+            }
+          }
+          setCurrentUserReaction(type)
+        } else if (result.action === 'removed') {
+          if (type === 'right') {
+            setCurrentRightCount(currentRightCount - 1)
+          } else {
+            setCurrentWrongCount(currentWrongCount - 1)
+          }
+          setCurrentUserReaction(null)
+        }
+      } catch (error) {
+        console.error('Failed to toggle reaction:', error)
       }
-      // Optionally refresh the page or update counts locally
-    } catch (error) {
-      console.error('Failed to toggle reaction:', error)
-    } finally {
-      setIsLoading(false)
-    }
+    })
   }
 
   return (
@@ -64,22 +88,23 @@ export function DoubtCard({
       <CardFooter className="flex justify-between">
         <div className="flex items-center gap-2">
           <Button
-            variant={userReaction === 'right' ? 'default' : 'outline'}
+            variant={currentUserReaction === 'right' ? 'default' : 'outline'}
             onClick={() => handleReaction('right')}
-            disabled={isLoading}
+            disabled={isPending}
           >
             <CheckCircle className="mr-2 h-4 w-4" />
-            {rightCount}
+            {currentRightCount}
           </Button>
           <Button
-            variant={userReaction === 'wrong' ? 'default' : 'outline'}
+            variant={currentUserReaction === 'wrong' ? 'default' : 'outline'}
             onClick={() => handleReaction('wrong')}
-            disabled={isLoading}
+            disabled={isPending}
           >
             <XCircle className="mr-2 h-4 w-4" />
-            {wrongCount}
+            {currentWrongCount}
           </Button>
         </div>
+        {isPending && <p>Reacting...</p>}
       </CardFooter>
     </Card>
   )
