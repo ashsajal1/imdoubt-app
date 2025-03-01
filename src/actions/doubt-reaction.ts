@@ -56,6 +56,7 @@ export async function toggleReaction(
             wrong_count: !existingReaction.is_right
               ? sql`${doubts.wrong_count} - 1`
               : sql`${doubts.wrong_count}`,
+            updated_at: new Date(), // Set updated_at to current timestamp
           })
           .where(eq(doubts.id, doubtId));
 
@@ -85,6 +86,7 @@ export async function toggleReaction(
             reactionType === "wrong"
               ? sql`${doubts.wrong_count} + 1`
               : sql`${doubts.wrong_count} - 1`,
+          updated_at: new Date(), // Set updated_at to current timestamp
         })
         .where(eq(doubts.id, doubtId));
 
@@ -110,6 +112,7 @@ export async function toggleReaction(
           reactionType === "wrong"
             ? sql`${doubts.wrong_count} + 1`
             : sql`${doubts.wrong_count}`,
+        updated_at: new Date(), // Set updated_at to current timestamp
       })
       .where(eq(doubts.id, doubtId));
 
