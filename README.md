@@ -1,86 +1,99 @@
-# Next SaaS Template
+# ImDoubt App
 
-The **Next SaaS Template** is a comprehensive starter kit for building scalable SaaS applications with Next.js, featuring built-in authentication, database integration, responsive design, efficient state management, pre-configured API routes, and developer tools like ESLint, Prettier, and TypeScript support.
+ImDoubt is a doubt-sharing application that allows users to post their doubts and receive reactions from other users. Users can mark doubts as "right" or "wrong" based on their understanding.
 
 ## Features
-- **Next.js**: Framework for server-side rendering, static site generation, and seamless API routes.
-- **TypeScript**: For static typing and improved developer experience.
-- **Clerk Authentication**: Built-in user authentication with support for various providers.
-- **Database Integration**: Choose between Prisma or Drizzle for database management.
-- **Tailwind CSS**: Utility-first CSS framework for rapid UI development.
-- **Shadcn**: Component library for React.
-- **PWA Support**: Built-in Progressive Web App capabilities.
+
+- User authentication and authorization
+- Post doubts with content
+- React to doubts with "right" or "wrong"
+- View counts of "right" and "wrong" reactions for each doubt
+- Real-time updates for reactions
+
+## Project Structure
+
+```
+imdoubt-app/
+├── src/
+│   ├── actions/
+│   │   └── doubt-reaction.ts
+│   ├── components/
+│   │   └── doubt-card.tsx
+│   ├── db/
+│   │   ├── drizzle.ts
+│   │   └── schema.ts
+│   └── pages/
+│       └── index.tsx
+├── public/
+│   └── ...
+├── styles/
+│   └── ...
+├── .env
+├── .gitignore
+├── README.md
+├── package.json
+└── tsconfig.json
+```
 
 ## Getting Started
 
+### Prerequisites
+
+- Node.js (v14 or higher)
+- pnpm
+- PostgreSQL
+
 ### Installation
 
-Clone the repository and install dependencies using your preferred package manager (npm, pnpm, or yarn):
+1. Clone the repository:
 
 ```bash
-git clone https://github.com/ashsajal1/next-saas-template.git
-cd next-saas-template
-npm install
-# or
+git clone https://github.com/ashsajal1/imdoubt-app.git
+cd imdoubt-app
+```
+
+2. Install dependencies:
+
+```bash
 pnpm install
-# or
-yarn install
 ```
 
-### Configuration
+3. Set up environment variables:
 
-1. **Authentication**: Set up Clerk for user authentication.
-2. **Database**: Configure either Prisma or Drizzle for your database needs. 
+Create a .env file in the root directory and add the following variables:
 
-To switch between Prisma and Drizzle or remove one:
-- For Prisma: Follow the setup instructions in the `prisma` folder.
-- For Drizzle: Follow the setup instructions in the `drizzle` folder.
-- To remove one, simply delete the corresponding folder and configuration files.
+```env
+DATABASE_URL=your_database_url
+CLERK_API_KEY=your_clerk_api_key
+```
 
-### PWA Assets Generation
-
-Generate PWA assets using the following command:
+4. Run database migrations:
 
 ```bash
-npm run generate-pwa-assets
-# or
-pnpm run generate-pwa-assets
-# or
-yarn generate-pwa-assets
+npx drizzle-kit push
 ```
 
-Replace `public/next.svg` with the path to your own logo if needed.
+### Running the App
 
-### Adding Payment Method (Stripe)
+Start the development server:
 
-We welcome contributions to add a payment method using Stripe. Please refer to the [Contributing](#contributing) section for more details.
+```bash
+pnpm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Usage
+
+1. Sign up or log in using the authentication system.
+2. Post a doubt by providing the content.
+3. React to doubts by marking them as "right" or "wrong".
+4. View the counts of "right" and "wrong" reactions for each doubt.
 
 ## Contributing
 
-We welcome contributions to enhance the functionality of this template. Here’s how you can contribute:
-
-1. **Fork the repository**
-2. **Create a new branch** for your feature or bug fix:
-    ```bash
-    git checkout -b feature-name
-    ```
-3. **Commit your changes**:
-    ```bash
-    git commit -m 'Add some feature'
-    ```
-4. **Push to the branch**:
-    ```bash
-    git push origin feature-name
-    ```
-5. **Create a pull request** to the `main` branch.
-
-### Contribution Guidelines
-
-- **Feature Requests**: If you have a feature request, please open an issue to discuss it before starting work.
-- **Bug Reports**: Report bugs by opening an issue.
-- **Code Style**: Follow the existing code style and conventions.
-- **Testing**: Ensure your code is well-tested.
+Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License. See the LICENSE file for details.
