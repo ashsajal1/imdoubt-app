@@ -59,8 +59,8 @@ export default async function DoubtPage({
         <DoubtDetail
           id={doubtsWithPerspectives.doubt.id}
           content={doubtsWithPerspectives.doubt.content}
-          rightCount={doubtsWithPerspectives.doubt.right_count}
-          wrongCount={doubtsWithPerspectives.doubt.wrong_count}
+          rightCount={doubtsWithPerspectives.doubt.right_count ?? 0}
+          wrongCount={doubtsWithPerspectives.doubt.wrong_count ?? 0}
           userReaction={null} // Replace with actual user reaction if available
           authorName="Author Name" // Replace with actual author name
           authorPhoto="https://avatar.vercel.sh/author" // Replace with actual author photo URL
