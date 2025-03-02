@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle } from "lucide-react";
 import { useState, useTransition } from "react";
 import { toggleReaction } from "@/actions/doubt-reaction";
+import { formatDistanceToNow } from "date-fns";
 
 interface DoubtDetailProps {
   id: number;
@@ -15,6 +16,7 @@ interface DoubtDetailProps {
   userReaction: "right" | "wrong" | null;
   authorName: string;
   authorPhoto: string;
+  createdAt: Date;
 }
 
 export function DoubtDetail({
@@ -25,6 +27,7 @@ export function DoubtDetail({
   userReaction,
   authorName,
   authorPhoto,
+  createdAt,
 }: DoubtDetailProps) {
   const [isPending, startTransition] = useTransition();
   const [currentRightCount, setCurrentRightCount] = useState(rightCount);
@@ -101,7 +104,10 @@ export function DoubtDetail({
             <AvatarImage src={authorPhoto} />
             <AvatarFallback>{authorName[0]}</AvatarFallback>
           </Avatar>
-          <p className="text-sm font-medium">{authorName}</p>
+          <div>
+            <p className="text-sm font-medium">{authorName}</p>
+            <p className="text-xs text-gray-500">{formatDistanceToNow(new Date(createdAt), { addSuffix: true })}</p>
+          </div>
         </div>
       </CardFooter>
     </Card>

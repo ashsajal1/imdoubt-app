@@ -64,6 +64,7 @@ export default async function DoubtPage({
           userReaction={null} // Replace with actual user reaction if available
           authorName="Author Name" // Replace with actual author name
           authorPhoto="https://avatar.vercel.sh/author" // Replace with actual author photo URL
+          createdAt={doubtsWithPerspectives.doubt.date_time || new Date()} // Pass the createdAt prop
         />
       )}
 
