@@ -11,7 +11,7 @@ export default async function Navbar() {
     const user = await currentUser();
     return (
         <nav className='p-4 z-10 fixed backdrop-blur-2xl top-0 w-full h-[80px] border-b flex items-center justify-between'>
-            <Link className='font-bold cursor-pointer' href="/">Logo</Link>
+            <Link className='font-bold cursor-pointer' href="/">ImDoubt</Link>
 
             <div className='flex items-center gap-2'>
                 <ModeToggle />
