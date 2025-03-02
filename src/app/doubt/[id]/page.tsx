@@ -1,12 +1,13 @@
 import { db } from "@/db/drizzle";
 import { doubts, perspectives } from "@/db/schema";
+import { error } from "console";
 import { eq } from "drizzle-orm";
 
 export default async function DoubtPage({
   params,
 }: {
   params: {
-    doubtId: string;
+    id: string;
   };
 }) {
   const fetchDoubtWithPerspectives = async (doubtId: number) => {
@@ -19,7 +20,7 @@ export default async function DoubtPage({
         .then((rows) => rows[0]);
 
       if (!doubtData) {
-        throw new Error("Doubt not found");
+        return { error: "Doubt not found!" };
       }
 
       // Fetch the perspectives for the doubt
@@ -38,20 +39,32 @@ export default async function DoubtPage({
     }
   };
 
-  const doubtsWithPerspectives = await fetchDoubtWithPerspectives(
-    parseInt(params.doubtId)
-  );
+  // Use params.id and validate it
+  const doubtId = parseInt(params.id, 10);
+
+  if (isNaN(doubtId)) {
+    return <div>Invalid doubt ID!</div>;
+  }
+
+  const doubtsWithPerspectives = await fetchDoubtWithPerspectives(doubtId);
+
+  if (doubtsWithPerspectives.error) {
+    return <div>{doubtsWithPerspectives.error}</div>;
+  }
 
   return (
     <div>
-      <h1>{doubtsWithPerspectives.doubt.content}</h1>
+      {doubtsWithPerspectives.doubt && (
+        <h1>{doubtsWithPerspectives.doubt.content}</h1>
+      )}
 
       <div>
-        {doubtsWithPerspectives.perspectives.map((perspective) => (
-          <div key={perspective.id}>
-            <p>{perspective.content}</p>
-          </div>
-        ))}
+        {doubtsWithPerspectives.perspectives &&
+          doubtsWithPerspectives.perspectives.map((perspective) => (
+            <div key={perspective.id}>
+              <p>{perspective.content}</p>
+            </div>
+          ))}
       </div>
     </div>
   );
