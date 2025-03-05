@@ -7,9 +7,7 @@ import { perspectiveSchema, type PerspectiveInput } from "@/lib/validations/pers
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { db } from "@/db/drizzle";
-import { perspectives } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { insertPerspective } from "@/actions/perspective-actions";
 
 interface PerspectiveFormProps {
   doubtId: number;
@@ -32,9 +30,9 @@ export function PerspectiveForm({ doubtId, onPerspectiveAdded }: PerspectiveForm
     startTransition(async () => {
       try {
         setAuthError(null);
-        const response = await db.insert(perspectives).values({
-          doubt_id: doubtId,
-          user_id: "currentUserId", // Replace with actual user ID
+        const response = await insertPerspective({
+          doubtId,
+          userId: "currentUserId", // Replace with actual user ID
           content: data.content,
         });
 
