@@ -15,7 +15,7 @@ export async function insertPerspective({ doubtId, userId, content }: InsertPers
       doubt_id: doubtId,
       user_id: userId,
       content: content,
-    });
+    }).returning();
 
     return response;
   } catch (error) {

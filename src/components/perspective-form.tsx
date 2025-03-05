@@ -3,12 +3,14 @@
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { perspectiveSchema, type PerspectiveInput } from "@/lib/validations/perspective";
+import {
+  perspectiveSchema,
+  type PerspectiveInput,
+} from "@/lib/validations/perspective";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { insertPerspective } from "@/actions/perspective-actions";
-import { revalidatePath } from "next/cache";
 
 interface PerspectiveFormProps {
   doubtId: number;
@@ -37,7 +39,7 @@ export function PerspectiveForm({ doubtId }: PerspectiveFormProps) {
         });
 
         if (response) {
-          revalidatePath(`/doubt/${doubtId}`);
+          window.location.reload();
         }
       } catch (error) {
         console.error("Error submitting perspective:", error);
@@ -58,9 +60,7 @@ export function PerspectiveForm({ doubtId }: PerspectiveFormProps) {
       {errors.content && (
         <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
       )}
-      {authError && (
-        <p className="text-red-500 text-sm mt-1">{authError}</p>
-      )}
+      {authError && <p className="text-red-500 text-sm mt-1">{authError}</p>}
       <Button type="submit" className="mt-3" disabled={isPending}>
         {isPending ? "Submitting..." : "Submit"}
       </Button>
