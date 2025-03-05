@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { DoubtDetail } from "@/components/DoubtDetail";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PerspectiveForm } from "@/components/perspective-form";
+import { revalidatePath } from "next/cache";
 
 export default async function DoubtPage({
   params,
@@ -74,12 +75,14 @@ export default async function DoubtPage({
           <h2 className="text-xl font-semibold">Perspectives</h2>
         </CardHeader>
         <CardContent>
-          <PerspectiveForm doubtId={0} onPerspectiveAdded={function (): void {
-            throw new Error("Function not implemented.");
-          } } />
-          {doubtsWithPerspectives.perspectives && doubtsWithPerspectives.perspectives.length > 0 ? (
+          <PerspectiveForm doubtId={doubtId} />
+          {doubtsWithPerspectives.perspectives &&
+          doubtsWithPerspectives.perspectives.length > 0 ? (
             doubtsWithPerspectives.perspectives.map((perspective) => (
-              <div key={perspective.id} className="border-b border-gray-200 py-4">
+              <div
+                key={perspective.id}
+                className="border-b border-gray-200 py-4"
+              >
                 <p className="text-gray-800">{perspective.content}</p>
               </div>
             ))

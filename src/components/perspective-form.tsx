@@ -8,13 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { insertPerspective } from "@/actions/perspective-actions";
+import { revalidatePath } from "next/cache";
 
 interface PerspectiveFormProps {
   doubtId: number;
-  onPerspectiveAdded: () => void;
 }
 
-export function PerspectiveForm({ doubtId, onPerspectiveAdded }: PerspectiveFormProps) {
+export function PerspectiveForm({ doubtId }: PerspectiveFormProps) {
   const [isPending, startTransition] = useTransition();
   const [authError, setAuthError] = useState<string | null>(null);
 
@@ -37,7 +37,7 @@ export function PerspectiveForm({ doubtId, onPerspectiveAdded }: PerspectiveForm
         });
 
         if (response) {
-          onPerspectiveAdded(); // Refresh perspectives list
+          revalidatePath(`/doubt/${doubtId}`);
         }
       } catch (error) {
         console.error("Error submitting perspective:", error);
