@@ -43,7 +43,7 @@ export function EditPerspectiveModal({
   } = useForm<PerspectiveInput>({
     resolver: zodResolver(perspectiveSchema),
     defaultValues: {
-      id: perspectiveId.toString(),
+      id: perspectiveId,
       content: initialContent,
     },
   });
