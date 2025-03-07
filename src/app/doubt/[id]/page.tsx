@@ -64,6 +64,16 @@ export default async function DoubtPage({
         .fullName ?? "Unknown"
     : "Unknown";
 
+  const getAuthorNameById = async (userId: string): Promise<string> => {
+    try {
+      const user = await client.users.getUser(userId);
+      return user?.fullName ?? "Unknown";
+    } catch (error) {
+      console.error("Error fetching author name:", error);
+      return "Unknown";
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       {doubtsWithPerspectives.doubt && (
@@ -87,12 +97,12 @@ export default async function DoubtPage({
           </CardHeader>
           {doubtsWithPerspectives.perspectives &&
           doubtsWithPerspectives.perspectives.length > 0 ? (
-            doubtsWithPerspectives.perspectives.map((perspective) => (
+            doubtsWithPerspectives.perspectives.map(async (perspective) => (
               <PerspectiveCard
                 key={perspective.id}
                 id={perspective.id}
                 content={perspective.content}
-                authorName={perspective.user_id}
+                authorName={await getAuthorNameById(perspective.user_id)}
                 authorPhoto={"https://avatar.vercel.sh/" + perspective.user_id}
                 createdAt={perspective.created_at ?? new Date()}
                 userId={perspective.user_id}
