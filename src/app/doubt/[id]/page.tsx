@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PerspectiveForm } from "@/components/perspective-form";
 import { revalidatePath } from "next/cache";
 import { PerspectiveCard } from "@/components/perspective-card";
+import { auth } from "@clerk/nextjs/server";
 
 export default async function DoubtPage({
   params,
@@ -56,6 +57,7 @@ export default async function DoubtPage({
     return <div>{doubtsWithPerspectives.error}</div>;
   }
 
+  const userId = auth().userId ?? null;
   return (
     <div className="container mx-auto px-4 py-8">
       {doubtsWithPerspectives.doubt && (
@@ -87,6 +89,7 @@ export default async function DoubtPage({
                 authorName={perspective.user_id}
                 authorPhoto={"https://avatar.vercel.sh/" + perspective.user_id}
                 createdAt={perspective.created_at ?? new Date()}
+                userId={userId}
               />
             ))
           ) : (

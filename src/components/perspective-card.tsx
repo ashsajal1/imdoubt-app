@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -16,6 +12,7 @@ interface PerspectiveCardProps {
   authorName: string;
   authorPhoto: string;
   createdAt: Date;
+  userId: string | null;
 }
 
 export function PerspectiveCard({
@@ -24,6 +21,7 @@ export function PerspectiveCard({
   authorName,
   authorPhoto,
   createdAt,
+  userId,
 }: PerspectiveCardProps) {
   return (
     <Card className="mb-4">
@@ -45,14 +43,16 @@ export function PerspectiveCard({
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon">
-              <Edit className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="icon">
-              <Trash className="h-4 w-4" />
-            </Button>
-          </div>
+          {userId && (
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="icon">
+                <Edit className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="icon">
+                <Trash className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
         </div>
       </CardHeader>
     </Card>
