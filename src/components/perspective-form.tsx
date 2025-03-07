@@ -14,9 +14,13 @@ import { insertPerspective } from "@/actions/perspective-actions";
 
 interface PerspectiveFormProps {
   doubtId: number;
+  currentUserId: string;
 }
 
-export function PerspectiveForm({ doubtId }: PerspectiveFormProps) {
+export function PerspectiveForm({
+  doubtId,
+  currentUserId,
+}: PerspectiveFormProps) {
   const [isPending, startTransition] = useTransition();
   const [authError, setAuthError] = useState<string | null>(null);
 
@@ -34,7 +38,7 @@ export function PerspectiveForm({ doubtId }: PerspectiveFormProps) {
         setAuthError(null);
         const response = await insertPerspective({
           doubtId,
-          userId: "currentUserId", // Replace with actual user ID
+          userId: currentUserId, // Replace with actual user ID
           content: data.content,
         });
 

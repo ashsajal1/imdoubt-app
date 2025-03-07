@@ -75,7 +75,7 @@ export default async function DoubtPage({
 
       <Card>
         <CardContent>
-          <PerspectiveForm doubtId={doubtId} />
+          <PerspectiveForm doubtId={doubtId} currentUserId={currentUserId!} />
           <CardHeader>
             <h2 className="text-xl font-semibold">Perspectives</h2>
           </CardHeader>
