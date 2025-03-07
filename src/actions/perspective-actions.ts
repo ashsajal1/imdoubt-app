@@ -63,3 +63,28 @@ export async function editPerspective(input: EditPerspectiveInput) {
     throw new Error("Failed to edit perspective");
   }
 }
+
+interface DeletePerspectiveInput {
+  id: number;
+}
+
+export async function deletePerspective(input: DeletePerspectiveInput) {
+  try {
+    const { id } = input;
+
+    const response = await db
+      .delete(perspectives)
+      .where(eq(perspectives.id, id))
+      .returning();
+
+    if (response.length === 0) {
+      throw new Error("Perspective not found");
+    }
+
+    revalidatePath(`/doubt/${response[0].doubt_id}`);
+    return response[0];
+  } catch (error) {
+    console.error("Error deleting perspective:", error);
+    throw new Error("Failed to delete perspective");
+  }
+}
