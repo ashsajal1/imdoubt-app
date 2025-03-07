@@ -5,6 +5,7 @@ import { DoubtDetail } from "@/components/DoubtDetail";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PerspectiveForm } from "@/components/perspective-form";
 import { revalidatePath } from "next/cache";
+import { PerspectiveCard } from "@/components/perspective-card";
 
 export default async function DoubtPage({
   params,
@@ -79,12 +80,14 @@ export default async function DoubtPage({
           {doubtsWithPerspectives.perspectives &&
           doubtsWithPerspectives.perspectives.length > 0 ? (
             doubtsWithPerspectives.perspectives.map((perspective) => (
-              <div
+              <PerspectiveCard
                 key={perspective.id}
-                className="border-b border-gray-200 py-4"
-              >
-                <p className="text-gray-800">{perspective.content}</p>
-              </div>
+                id={perspective.id}
+                content={perspective.content}
+                authorName={perspective.user_id}
+                authorPhoto={"https://avatar.vercel.sh/" + perspective.user_id}
+                createdAt={perspective.created_at ?? new Date()}
+              />
             ))
           ) : (
             <p className="text-gray-600">No perspectives yet.</p>
