@@ -72,11 +72,11 @@ export default async function DoubtPage({
       )}
 
       <Card>
-        <CardHeader>
-          <h2 className="text-xl font-semibold">Perspectives</h2>
-        </CardHeader>
         <CardContent>
           <PerspectiveForm doubtId={doubtId} />
+          <CardHeader>
+            <h2 className="text-xl font-semibold">Perspectives</h2>
+          </CardHeader>
           {doubtsWithPerspectives.perspectives &&
           doubtsWithPerspectives.perspectives.length > 0 ? (
             doubtsWithPerspectives.perspectives.map((perspective) => (
