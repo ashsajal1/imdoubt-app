@@ -48,6 +48,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "cobe": "^0.6.3",
+    "confetti": "^2.0.6",
     "date-fns": "^3.6.0",
     "drizzle-orm": "^0.32.2",
     "embla-carousel-react": "^8.1.5",
