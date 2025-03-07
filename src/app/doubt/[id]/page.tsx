@@ -7,6 +7,7 @@ import { PerspectiveForm } from "@/components/perspective-form";
 import { revalidatePath } from "next/cache";
 import { PerspectiveCard } from "@/components/perspective-card";
 import { auth, clerkClient } from "@clerk/nextjs/server";
+import { deletePerspective } from "@/actions/perspective-actions";
 
 export default async function DoubtPage({
   params,
@@ -107,10 +108,6 @@ export default async function DoubtPage({
                 createdAt={perspective.created_at ?? new Date()}
                 userId={perspective.user_id}
                 currentUserId={currentUserId!}
-                onPerspectiveDeleted={() => {
-                  // Add your logic for handling perspective deletion here
-                  console.log(`Perspective with id ${perspective.id} deleted`);
-                }}
               />
             ))
           ) : (

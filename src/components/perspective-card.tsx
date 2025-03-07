@@ -23,7 +23,6 @@ interface PerspectiveCardProps {
   createdAt: Date;
   userId: string;
   currentUserId: string;
-  onPerspectiveDeleted: () => void;
 }
 
 export function PerspectiveCard({
@@ -34,7 +33,6 @@ export function PerspectiveCard({
   createdAt,
   userId,
   currentUserId,
-  onPerspectiveDeleted,
 }: PerspectiveCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -42,7 +40,6 @@ export function PerspectiveCard({
   const handleDelete = async () => {
     try {
       await deletePerspective({ id });
-      onPerspectiveDeleted();
       setIsDeleting(false);
     } catch (error) {
       console.error("Error deleting perspective:", error);
