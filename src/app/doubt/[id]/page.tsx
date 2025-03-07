@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PerspectiveForm } from "@/components/perspective-form";
 import { revalidatePath } from "next/cache";
 import { PerspectiveCard } from "@/components/perspective-card";
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 
 export default async function DoubtPage({
   params,
@@ -58,6 +58,12 @@ export default async function DoubtPage({
   }
 
   const currentUserId = auth().userId ?? null;
+  const client = clerkClient();
+  const authorName = doubtsWithPerspectives.doubt
+    ? (await client.users.getUser(doubtsWithPerspectives.doubt.user_id))
+        .fullName ?? "Unknown"
+    : "Unknown";
+
   return (
     <div className="container mx-auto px-4 py-8">
       {doubtsWithPerspectives.doubt && (
@@ -67,7 +73,7 @@ export default async function DoubtPage({
           rightCount={doubtsWithPerspectives.doubt.right_count ?? 0}
           wrongCount={doubtsWithPerspectives.doubt.wrong_count ?? 0}
           userReaction={null} // Replace with actual user reaction if available
-          authorName="Author Name" // Replace with actual author name
+          authorName={authorName!} // Replace with actual author name
           authorPhoto="https://avatar.vercel.sh/author" // Replace with actual author photo URL
           createdAt={doubtsWithPerspectives.doubt.date_time || new Date()} // Pass the createdAt prop
         />
