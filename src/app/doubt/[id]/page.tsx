@@ -107,6 +107,10 @@ export default async function DoubtPage({
                 createdAt={perspective.created_at ?? new Date()}
                 userId={perspective.user_id}
                 currentUserId={currentUserId!}
+                onPerspectiveDeleted={() => {
+                  // Add your logic for handling perspective deletion here
+                  console.log(`Perspective with id ${perspective.id} deleted`);
+                }}
               />
             ))
           ) : (
