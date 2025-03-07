@@ -28,9 +28,7 @@ export function PerspectiveCard({
   return (
     <Card className="mb-4">
       <CardHeader>
-        <CardContent>
-          <p className="text-gray-800">{content}</p>
-        </CardContent>
+        <p className="mb-4">{content}</p>
 
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
