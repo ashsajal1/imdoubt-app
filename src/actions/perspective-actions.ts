@@ -48,11 +48,16 @@ export async function editPerspective(input: EditPerspectiveInput) {
 
     const response = await db
       .update(perspectives)
-      .set({ content })
+      .set({ content, updated_at: new Date() })
       .where(eq(perspectives.id, id))
       .returning();
 
+    if (response.length === 0) {
+      throw new Error("Perspective not found");
+    }
+
     revalidatePath(`/doubt/${response[0].doubt_id}`);
+    return response[0];
   } catch (error) {
     console.error("Error editing perspective:", error);
     throw new Error("Failed to edit perspective");
