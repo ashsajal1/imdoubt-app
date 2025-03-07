@@ -106,7 +106,7 @@ export default async function DoubtPage({
                 authorPhoto={"https://avatar.vercel.sh/" + perspective.user_id}
                 createdAt={perspective.created_at ?? new Date()}
                 userId={perspective.user_id}
-                currentUserId={currentUserId}
+                currentUserId={currentUserId!}
               />
             ))
           ) : (

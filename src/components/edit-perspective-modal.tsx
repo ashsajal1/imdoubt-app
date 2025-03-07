@@ -22,9 +22,8 @@ import { editPerspective } from "@/actions/perspective-actions";
 interface EditPerspectiveModalProps {
   isOpen: boolean;
   onClose: () => void;
-  perspectiveId: string;
+  perspectiveId: number;
   initialContent: string;
-  onPerspectiveEdited: () => void;
 }
 
 export function EditPerspectiveModal({
@@ -32,7 +31,6 @@ export function EditPerspectiveModal({
   onClose,
   perspectiveId,
   initialContent,
-  onPerspectiveEdited,
 }: EditPerspectiveModalProps) {
   const [isPending, startTransition] = useTransition();
   const [authError, setAuthError] = useState<string | null>(null);
@@ -45,7 +43,7 @@ export function EditPerspectiveModal({
   } = useForm<PerspectiveInput>({
     resolver: zodResolver(perspectiveSchema),
     defaultValues: {
-      id: perspectiveId,
+      id: perspectiveId.toString(),
       content: initialContent,
     },
   });
@@ -55,7 +53,6 @@ export function EditPerspectiveModal({
       try {
         setAuthError(null);
         await editPerspective({ ...data, id: Number(data.id) });
-        onPerspectiveEdited();
         onClose();
       } catch (error) {
         console.error("Error editing perspective:", error);

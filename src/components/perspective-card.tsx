@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { formatDistanceToNow } from "date-fns";
+import { EditPerspectiveModal } from "./edit-perspective-modal";
 
 interface PerspectiveCardProps {
   id: number;
@@ -12,8 +14,8 @@ interface PerspectiveCardProps {
   authorName: string;
   authorPhoto: string;
   createdAt: Date;
-  userId: string | null;
-  currentUserId: string | null;
+  userId: string;
+  currentUserId: string;
 }
 
 export function PerspectiveCard({
@@ -25,6 +27,8 @@ export function PerspectiveCard({
   userId,
   currentUserId,
 }: PerspectiveCardProps) {
+  const [isEditing, setIsEditing] = useState(false);
+
   return (
     <Card className="mb-4">
       <CardHeader>
@@ -45,7 +49,7 @@ export function PerspectiveCard({
           </div>
           {userId === currentUserId && (
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" onClick={() => setIsEditing(true)}>
                 <Edit className="h-4 w-4" />
               </Button>
               <Button variant="outline" size="icon">
@@ -54,6 +58,13 @@ export function PerspectiveCard({
             </div>
           )}
         </div>
+
+        <EditPerspectiveModal
+          isOpen={isEditing}
+          onClose={() => setIsEditing(false)}
+          perspectiveId={id}
+          initialContent={content}
+        />
       </CardHeader>
     </Card>
   );
