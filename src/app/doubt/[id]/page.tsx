@@ -57,7 +57,7 @@ export default async function DoubtPage({
     return <div>{doubtsWithPerspectives.error}</div>;
   }
 
-  const userId = auth().userId ?? null;
+  const currentUserId = auth().userId ?? null;
   return (
     <div className="container mx-auto px-4 py-8">
       {doubtsWithPerspectives.doubt && (
@@ -89,7 +89,8 @@ export default async function DoubtPage({
                 authorName={perspective.user_id}
                 authorPhoto={"https://avatar.vercel.sh/" + perspective.user_id}
                 createdAt={perspective.created_at ?? new Date()}
-                userId={userId}
+                userId={perspective.user_id}
+                currentUserId={currentUserId}
               />
             ))
           ) : (

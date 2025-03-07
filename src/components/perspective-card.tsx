@@ -13,6 +13,7 @@ interface PerspectiveCardProps {
   authorPhoto: string;
   createdAt: Date;
   userId: string | null;
+  currentUserId: string | null;
 }
 
 export function PerspectiveCard({
@@ -22,6 +23,7 @@ export function PerspectiveCard({
   authorPhoto,
   createdAt,
   userId,
+  currentUserId,
 }: PerspectiveCardProps) {
   return (
     <Card className="mb-4">
@@ -43,7 +45,7 @@ export function PerspectiveCard({
               </p>
             </div>
           </div>
-          {userId && (
+          {userId === currentUserId && (
             <div className="flex items-center gap-2">
               <Button variant="outline" size="icon">
                 <Edit className="h-4 w-4" />
