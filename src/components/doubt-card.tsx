@@ -85,7 +85,7 @@ export function DoubtCard({
           </div>
         </CardHeader>
         <CardContent>
-          <p className="text-base">{content}</p>
+          <p className="text-xl font-bold">{content}</p>
         </CardContent>
         <CardFooter className="flex justify-between">
           <div className="flex items-center gap-2">
