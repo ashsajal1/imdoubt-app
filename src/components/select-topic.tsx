@@ -31,7 +31,7 @@ export function SelectTopic({
   errors,
 }: SelectTopicProps) {
   const [topics, setTopics] = useState<Topic[]>([]);
-  const [selectedTopicId, setSelectedTopicId] = useState<string | null>(null);
+  const [selectedTopicId, setSelectedTopicId] = useState<number | null>(null);
   const [selectedTopicName, setSelectedTopicName] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,7 +50,7 @@ export function SelectTopic({
     fetchTopics();
   }, []);
 
-  const handleSelect = (topicId: string, topicName: string) => {
+  const handleSelect = (topicId: number, topicName: string) => {
     setSelectedTopicId(topicId);
     setSelectedTopicName(topicName);
     setIsOpen(false);
@@ -59,6 +59,9 @@ export function SelectTopic({
   const handleTopicCreated = async () => {
     const data = await getAllTopics();
     setTopics(data);
+    setSelectedTopicId(data[data.length - 1].id);
+    setSelectedTopicName(data[data.length - 1].name);
+    setIsModalOpen(false);
   };
 
   return (
@@ -76,7 +79,7 @@ export function SelectTopic({
               {topics.map((topic) => (
                 <CommandItem
                   key={topic.id}
-                  onSelect={() => handleSelect(topic.id.toString(), topic.name)}
+                  onSelect={() => handleSelect(topic.id, topic.name)}
                 >
                   {topic.name}
                 </CommandItem>
