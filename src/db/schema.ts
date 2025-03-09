@@ -9,8 +9,18 @@ import {
   text,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
-import { update } from "react-spring";
 
+// Define the topics table
+export const topics = pgTable("topics", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => sql`CURRENT_TIMESTAMP`),
+});
+
+// Define the doubts table
 export const doubts = pgTable("doubts", {
   id: serial("id").primaryKey(),
   user_id: varchar("user_id", { length: 255 }).notNull(),
@@ -18,11 +28,15 @@ export const doubts = pgTable("doubts", {
   date_time: timestamp("date_time").defaultNow(),
   right_count: integer("right_count").default(0),
   wrong_count: integer("wrong_count").default(0),
+  topic_id: integer("topic_id")
+    .notNull()
+    .references(() => topics.id, { onDelete: "cascade" }),
   updated_at: timestamp("updated_at")
     .defaultNow()
     .$onUpdateFn(() => sql`CURRENT_TIMESTAMP`),
 });
 
+// Define the doubtReactions table
 export const doubtReactions = pgTable(
   "doubt_reactions",
   {

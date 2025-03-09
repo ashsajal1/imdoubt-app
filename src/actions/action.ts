@@ -25,6 +25,7 @@ export const createDoubt = async (content: string) => {
       .values({
         user_id: user.userId,
         content,
+        topic_id: 1,
       })
       .returning();
 
