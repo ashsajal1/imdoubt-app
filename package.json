@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "./migrate-production.sh && next build",
+    "build": "npx drizzle-kit push && next build",
     "start": "next start",
     "lint": "next lint",
     "generate-pwa-assets": "pwa-assets-generator --preset minimal public/next.svg"
