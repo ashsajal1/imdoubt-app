@@ -9,6 +9,7 @@ import { Textarea } from "./ui/textarea";
 import { createDoubt } from "@/actions/action";
 import { doubtSchema, type DoubtInput } from "@/lib/validations/doubt";
 import { useRouter } from "next/navigation";
+import { SelectTopic } from "./select-topic";
 
 export default function DoubtForm() {
   const {
@@ -28,7 +29,7 @@ export default function DoubtForm() {
       try {
         setAuthError(null);
         console.log("Submitting doubt:", data);
-        const response = await createDoubt(data.content);
+        const response = await createDoubt(data.content, data.topic_id);
         console.log("Doubt submission response:", response);
 
         if (response.ok) {
@@ -61,6 +62,12 @@ export default function DoubtForm() {
         {errors.content && (
           <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
         )}
+        <SelectTopic
+          name="topic_id"
+          label="Select a topic"
+          register={register}
+          errors={errors}
+        />
         {authError && <p className="text-red-500 text-sm mt-1">{authError}</p>}
         <Button type="submit" className="mt-3" disabled={isPending}>
           {isPending ? "Creating..." : "Submit"}
