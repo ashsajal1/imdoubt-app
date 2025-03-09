@@ -16,15 +16,15 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { getAllTopics } from "@/actions/topics";
 import { topics } from "@/db/schema";
+import { CreateTopicModal } from "./create-topic-modal";
 
+type Topic = typeof topics.$inferSelect;
 interface SelectTopicProps {
   name: string;
   label: string;
   register: any;
   errors: any;
 }
-
-type Topic = typeof topics.$inferSelect;
 
 export function SelectTopic({
   name,
@@ -35,6 +35,7 @@ export function SelectTopic({
   const [topics, setTopics] = useState<Topic[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     // Fetch topics from the server
@@ -53,6 +54,11 @@ export function SelectTopic({
   const handleSelect = (topicId: number, topicName: string) => {
     setSelectedTopic(topicName);
     setIsOpen(false);
+  };
+
+  const handleTopicCreated = async () => {
+    const data = await getAllTopics();
+    setTopics(data);
   };
 
   return (
@@ -75,6 +81,9 @@ export function SelectTopic({
                   {topic.name}
                 </CommandItem>
               ))}
+              <CommandItem onSelect={() => setIsModalOpen(true)}>
+                + Create new topic
+              </CommandItem>
             </CommandList>
           </Command>
         </PopoverContent>
@@ -83,6 +92,11 @@ export function SelectTopic({
       {errors[name] && (
         <p className="text-red-500 text-sm mt-1">{errors[name].message}</p>
       )}
+      <CreateTopicModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onTopicCreated={handleTopicCreated}
+      />
     </div>
   );
 }
