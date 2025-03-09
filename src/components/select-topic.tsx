@@ -15,6 +15,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { getAllTopics } from "@/actions/topics";
+import { topics } from "@/db/schema";
 
 interface SelectTopicProps {
   name: string;
@@ -23,13 +24,15 @@ interface SelectTopicProps {
   errors: any;
 }
 
+type Topic = typeof topics.$inferSelect;
+
 export function SelectTopic({
   name,
   label,
   register,
   errors,
 }: SelectTopicProps) {
-  const [topics, setTopics] = useState([]);
+  const [topics, setTopics] = useState<Topic[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -47,7 +50,7 @@ export function SelectTopic({
     fetchTopics();
   }, []);
 
-  const handleSelect = (topicId: string, topicName: string) => {
+  const handleSelect = (topicId: number, topicName: string) => {
     setSelectedTopic(topicName);
     setIsOpen(false);
   };
