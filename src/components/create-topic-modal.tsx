@@ -76,7 +76,7 @@ export function CreateTopicModal({
           {authError && (
             <p className="text-red-500 text-sm mt-1">{authError}</p>
           )}
-          <DialogFooter>
+          <DialogFooter className="mt-3">
             <Button type="submit" disabled={isPending}>
               {isPending ? "Creating..." : "Create"}
             </Button>
