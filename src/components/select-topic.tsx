@@ -57,7 +57,6 @@ export function SelectTopic({
 
   return (
     <div>
-      <Label htmlFor={name}>{label}</Label>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" className="w-full">

@@ -39,7 +39,9 @@ export default function DoubtForm() {
           if (response.error === "UNAUTHORIZED") {
             setAuthError("Please log in to submit a doubt");
           } else {
-            setAuthError(response.error || "An error occurred while submitting");
+            setAuthError(
+              response.error || "An error occurred while submitting"
+            );
           }
         }
       } catch (error) {
@@ -62,16 +64,19 @@ export default function DoubtForm() {
         {errors.content && (
           <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
         )}
-        <SelectTopic
-          name="topic_id"
-          label="Select a topic"
-          register={register}
-          errors={errors}
-        />
+
         {authError && <p className="text-red-500 text-sm mt-1">{authError}</p>}
-        <Button type="submit" className="mt-3" disabled={isPending}>
-          {isPending ? "Creating..." : "Submit"}
-        </Button>
+        <div className="flex items-center gap-2 mt-3">
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Creating..." : "Submit"}
+          </Button>
+          <SelectTopic
+            name="topic_id"
+            label="Select a topic"
+            register={register}
+            errors={errors}
+          />
+        </div>
       </form>
     </div>
   );
