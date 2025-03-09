@@ -82,7 +82,7 @@ export function EditPerspectiveModal({
           {authError && (
             <p className="text-red-500 text-sm mt-1">{authError}</p>
           )}
-          <DialogFooter>
+          <DialogFooter className="mt-4">
             <Button type="submit" disabled={isPending}>
               {isPending ? "Saving..." : "Save"}
             </Button>
