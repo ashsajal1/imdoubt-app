@@ -6,5 +6,8 @@ export $(grep -v '^#' .env.production | xargs)
 # Run migrations
 npx drizzle-kit push
 
-# Start the application
-npm start
+# # Build the application
+# npm run build
+
+# # Start the application
+# npm start
