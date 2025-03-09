@@ -29,6 +29,7 @@ export const doubts = pgTable("doubts", {
   right_count: integer("right_count").default(0),
   wrong_count: integer("wrong_count").default(0),
   topic_id: integer("topic_id")
+    .notNull()
     .references(() => topics.id, { onDelete: "cascade" }),
   updated_at: timestamp("updated_at")
     .defaultNow()
