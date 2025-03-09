@@ -5,7 +5,7 @@ import { doubts } from "@/db/schema";
 import { auth } from "@clerk/nextjs/server";
 import { validateDoubt } from "@/lib/validations/doubt";
 
-export const createDoubt = async (content: string) => {
+export const createDoubt = async (content: string, topic_id: number) => {
   try {
     const validationResult = validateDoubt({ content });
     if (!validationResult.ok) {
@@ -25,7 +25,7 @@ export const createDoubt = async (content: string) => {
       .values({
         user_id: user.userId,
         content,
-        topic_id: 1,
+        topic_id: topic_id,
       })
       .returning();
 
