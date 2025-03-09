@@ -12,13 +12,11 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { getAllTopics } from "@/actions/topics";
-import { topics } from "@/db/schema";
 import { CreateTopicModal } from "./create-topic-modal";
+import { Topic } from "@/lib/type";
 
-type Topic = typeof topics.$inferSelect;
 interface SelectTopicProps {
   name: string;
   label: string;
@@ -33,7 +31,8 @@ export function SelectTopic({
   errors,
 }: SelectTopicProps) {
   const [topics, setTopics] = useState<Topic[]>([]);
-  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+  const [selectedTopicId, setSelectedTopicId] = useState<string | null>(null);
+  const [selectedTopicName, setSelectedTopicName] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -51,8 +50,9 @@ export function SelectTopic({
     fetchTopics();
   }, []);
 
-  const handleSelect = (topicId: number, topicName: string) => {
-    setSelectedTopic(topicName);
+  const handleSelect = (topicId: string, topicName: string) => {
+    setSelectedTopicId(topicId);
+    setSelectedTopicName(topicName);
     setIsOpen(false);
   };
 
@@ -66,7 +66,7 @@ export function SelectTopic({
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" className="w-full">
-            {selectedTopic || "Select a topic"}
+            {selectedTopicName || "Select a topic"}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full p-0">
@@ -76,7 +76,7 @@ export function SelectTopic({
               {topics.map((topic) => (
                 <CommandItem
                   key={topic.id}
-                  onSelect={() => handleSelect(topic.id, topic.name)}
+                  onSelect={() => handleSelect(topic.id.toString(), topic.name)}
                 >
                   {topic.name}
                 </CommandItem>
@@ -88,7 +88,7 @@ export function SelectTopic({
           </Command>
         </PopoverContent>
       </Popover>
-      <input type="hidden" {...register(name)} value={selectedTopic || ""} />
+      <input type="hidden" {...register(name)} value={selectedTopicId || ""} />
       {errors[name] && (
         <p className="text-red-500 text-sm mt-1">{errors[name].message}</p>
       )}
