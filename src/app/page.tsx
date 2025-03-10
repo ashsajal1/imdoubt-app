@@ -7,6 +7,10 @@ import { sql, eq, desc } from "drizzle-orm";
 import { TopicList } from "@/components/topic-list";
 import { Badge } from "@/components/ui/badge";
 
+export const metadata = {
+  title: "ImDoubt - Home",
+  description: "Home page of ImDoubt, where you can share your doubts.",
+};
 export default async function Home() {
   const user = await currentUser();
   const userId = user?.id;
@@ -43,7 +47,7 @@ export default async function Home() {
         : sql<"right" | "wrong" | null>`NULL`,
     })
     .from(doubts)
-    .leftJoin(topics, eq(doubts.topic_id, topics.id)) 
+    .leftJoin(topics, eq(doubts.topic_id, topics.id))
     .orderBy(desc(doubts.date_time))
     .limit(5);
 

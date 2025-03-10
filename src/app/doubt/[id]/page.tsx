@@ -8,6 +8,71 @@ import { revalidatePath } from "next/cache";
 import { PerspectiveCard } from "@/components/perspective-card";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { deletePerspective } from "@/actions/perspective-actions";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+
+// Add interfaces for metadata generation
+interface DoubtPageProps {
+  params: {
+    id: string;
+  };
+}
+
+// Add generateMetadata function for dynamic SEO
+export async function generateMetadata({
+  params,
+}: DoubtPageProps): Promise<Metadata> {
+  const doubtId = parseInt(params.id, 10);
+
+  if (isNaN(doubtId)) {
+    return {
+      title: "Invalid Doubt - ImDoubt",
+      description: "This doubt could not be found.",
+    };
+  }
+
+  try {
+    const doubt = await db
+      .select()
+      .from(doubts)
+      .where(eq(doubts.id, doubtId))
+      .then((rows) => rows[0]);
+
+    if (!doubt) {
+      return {
+        title: "Doubt Not Found - ImDoubt",
+        description: "The requested doubt could not be found.",
+      };
+    }
+
+    const description =
+      doubt.content.length > 155
+        ? `${doubt.content.substring(0, 155)}...`
+        : doubt.content;
+
+    return {
+      title: `${doubt.content.substring(0, 50)}... - ImDoubt`,
+      description,
+      openGraph: {
+        title: `Doubt Discussion - ImDoubt`,
+        description,
+        type: "article",
+        url: `/doubt/${doubtId}`,
+      },
+      twitter: {
+        card: "summary",
+        title: `Doubt Discussion - ImDoubt`,
+        description,
+      },
+    };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return {
+      title: "Error - ImDoubt",
+      description: "An error occurred while loading this doubt.",
+    };
+  }
+}
 
 export default async function DoubtPage({
   params,
