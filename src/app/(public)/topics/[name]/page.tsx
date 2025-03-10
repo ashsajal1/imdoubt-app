@@ -1,7 +1,7 @@
 import { db } from "@/db/drizzle";
 import { doubts, topics, doubtReactions } from "@/db/schema";
 import { DoubtCard } from "@/components/doubt-card";
-import { sql, eq } from "drizzle-orm";
+import { sql, eq, desc } from "drizzle-orm";
 import { currentUser } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
 import { clerkClient } from "@clerk/nextjs/server";
@@ -53,7 +53,7 @@ export default async function TopicPage({ params }: TopicPageProps) {
     .from(doubts)
     .leftJoin(topics, eq(doubts.topic_id, topics.id))
     .where(sql`LOWER(${topics.name}) = LOWER(${params.name})`)
-    .orderBy(doubts.date_time);
+    .orderBy(desc(doubts.date_time));
 
   const doubtsWithUserNames = await Promise.all(
     doubtsList.map(async (doubt) => {
