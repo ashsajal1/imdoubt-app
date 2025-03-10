@@ -4,6 +4,8 @@ import { db } from "@/db/drizzle";
 import { doubts, doubtReactions, topics } from "@/db/schema"; // Add topics import
 import { DoubtCard } from "@/components/doubt-card";
 import { sql, eq } from "drizzle-orm";
+import { TopicList } from "@/components/topic-list";
+import { Badge } from "@/components/ui/badge";
 
 export default async function Home() {
   const user = await currentUser();
@@ -63,6 +65,14 @@ export default async function Home() {
   return (
     <main className="container mx-auto px-4 py-8">
       <DoubtForm />
+
+      <div>
+        <h1 className="text-3xl font-bold mt-8 mb-4">Recent Doubts</h1>
+        <div className="flex items-center gap-2">
+          <Badge variant="default">All</Badge>
+          <TopicList />
+        </div>
+      </div>
       <div className="mt-8">
         {doubtsWithUserNames.map((doubt) => (
           <DoubtCard
