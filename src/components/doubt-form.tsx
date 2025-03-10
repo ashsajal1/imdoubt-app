@@ -29,7 +29,7 @@ export default function DoubtForm() {
       try {
         setAuthError(null);
         console.log("Submitting doubt:", data);
-        const response = await createDoubt(data.content, data.topic_id);
+        const response = await createDoubt(data.content, data.topicId);
         console.log("Doubt submission response:", response);
 
         if (response.ok) {
@@ -71,7 +71,7 @@ export default function DoubtForm() {
             {isPending ? "Creating..." : "Submit"}
           </Button>
           <SelectTopic
-            name="topic_id"
+            name="topicId"
             label="Select a topic"
             register={register}
             errors={errors}

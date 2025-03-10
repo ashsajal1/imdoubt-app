@@ -5,7 +5,7 @@ export const doubtSchema = z.object({
     .string()
     .min(10, "Doubt must be at least 20 characters.")
     .max(250, "Doubt cannot exceed 250 characters."),
-  topic_id: z.number(),
+  topicId: z.number(),
 });
 
 export type DoubtInput = z.infer<typeof doubtSchema>;
