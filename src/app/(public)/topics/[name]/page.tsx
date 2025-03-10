@@ -5,10 +5,32 @@ import { sql, eq, desc } from "drizzle-orm";
 import { currentUser } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
 import { clerkClient } from "@clerk/nextjs/server";
+import { Metadata } from "next";
 
 interface TopicPageProps {
   params: {
     name: string;
+  };
+}
+
+// Generate metadata for SEO
+export async function generateMetadata({ params }: TopicPageProps): Promise<Metadata> {
+  const decodedTopicName = decodeURIComponent(params.name);
+  
+  return {
+    title: `${decodedTopicName} Doubts - ImDoubt`,
+    description: `Explore and discuss doubts related to ${decodedTopicName}. Join the conversation and help others understand ${decodedTopicName} better.`,
+    openGraph: {
+      title: `${decodedTopicName} Doubts - ImDoubt`,
+      description: `Explore and discuss doubts related to ${decodedTopicName}. Join the conversation and help others understand ${decodedTopicName} better.`,
+      type: 'website',
+      url: `/topics/${params.name}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${decodedTopicName} Doubts - ImDoubt`,
+      description: `Explore and discuss doubts related to ${decodedTopicName}. Join the conversation and help others understand ${decodedTopicName} better.`,
+    }
   };
 }
 
