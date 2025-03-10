@@ -1,9 +1,9 @@
 import { currentUser, clerkClient } from "@clerk/nextjs/server";
 import DoubtForm from "@/components/doubt-form";
 import { db } from "@/db/drizzle";
-import { doubts, doubtReactions } from "@/db/schema";
+import { doubts, doubtReactions, topics } from "@/db/schema"; // Add topics import
 import { DoubtCard } from "@/components/doubt-card";
-import { sql } from "drizzle-orm";
+import { sql, eq } from "drizzle-orm";
 
 export default async function Home() {
   const user = await currentUser();
@@ -18,6 +18,7 @@ export default async function Home() {
       user_id: doubts.user_id,
       right_count: doubts.right_count,
       wrong_count: doubts.wrong_count,
+      topic_name: topics.name, // Add this line
       userReaction: userId
         ? sql<"right" | "wrong" | null>`
         CASE 
@@ -40,6 +41,7 @@ export default async function Home() {
         : sql<"right" | "wrong" | null>`NULL`,
     })
     .from(doubts)
+    .leftJoin(topics, eq(doubts.topic_id, topics.id)) // Add this line
     .limit(5);
 
   // Fetch user details for each doubt
@@ -71,7 +73,9 @@ export default async function Home() {
             rightCount={doubt.right_count ?? 0}
             wrongCount={doubt.wrong_count ?? 0}
             userReaction={doubt.userReaction}
-            authorName={doubt.authorName} topicName={"Geography"}          />
+            authorName={doubt.authorName}
+            topicName={doubt.topic_name ?? "Uncategorized"}
+          />
         ))}
       </div>
     </main>
