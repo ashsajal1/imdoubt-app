@@ -72,7 +72,6 @@ export default function DoubtForm() {
           </Button>
           <SelectTopic
             name="topicId"
-            label="Select a topic"
             register={register}
             errors={errors}
           />

@@ -19,20 +19,16 @@ import { Topic } from "@/lib/type";
 
 interface SelectTopicProps {
   name: string;
-  label: string;
   register: any;
   errors: any;
 }
 
-export function SelectTopic({
-  name,
-  label,
-  register,
-  errors,
-}: SelectTopicProps) {
+export function SelectTopic({ name, register, errors }: SelectTopicProps) {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [selectedTopicId, setSelectedTopicId] = useState<number | null>(null);
-  const [selectedTopicName, setSelectedTopicName] = useState<string | null>(null);
+  const [selectedTopicName, setSelectedTopicName] = useState<string | null>(
+    null
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
