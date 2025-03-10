@@ -17,6 +17,7 @@ interface DoubtCardProps {
   rightCount: number;
   wrongCount: number;
   userReaction: "right" | "wrong" | null;
+  topicName: string; // Add this line
 }
 
 export function DoubtCard({
@@ -27,6 +28,7 @@ export function DoubtCard({
   rightCount,
   wrongCount,
   userReaction,
+  topicName, // Add this parameter
 }: DoubtCardProps) {
   const [isPending, startTransition] = useTransition();
   const [currentRightCount, setCurrentRightCount] = useState(rightCount);
@@ -82,6 +84,12 @@ export function DoubtCard({
             <p className="text-sm text-muted-foreground">
               {formatDistanceToNow(createdAt, { addSuffix: true })}
             </p>
+          </div>
+          {/* Add topic badge */}
+          <div className="ml-auto">
+            <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+              {topicName}
+            </span>
           </div>
         </CardHeader>
         <CardContent>

@@ -71,8 +71,7 @@ export default async function Home() {
             rightCount={doubt.right_count ?? 0}
             wrongCount={doubt.wrong_count ?? 0}
             userReaction={doubt.userReaction}
-            authorName={doubt.authorName}
-          />
+            authorName={doubt.authorName} topicName={"Geography"}          />
         ))}
       </div>
     </main>
