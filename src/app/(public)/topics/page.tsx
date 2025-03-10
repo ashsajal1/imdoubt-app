@@ -11,7 +11,7 @@ export default async function TopicsPage() {
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {topics.map((topic) => (
-          <Link key={topic.id} href={`/topics/${topic.id}`}>
+          <Link key={topic.id} href={`/topics/${topic.name}`}>
             <Card className="hover:bg-accent transition-colors">
               <CardHeader>
                 <CardTitle>{topic.name}</CardTitle>
