@@ -7,7 +7,10 @@ import { validateDoubt } from "@/lib/validations/doubt";
 
 export const createDoubt = async (content: string, topic_id: number) => {
   try {
-    const validationResult = validateDoubt({ content });
+    const validationResult = validateDoubt({
+      content,
+      topicId: topic_id,
+    });
     if (!validationResult.ok) {
       return {
         ok: false,
