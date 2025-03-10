@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useController, Control } from "react-hook-form";
 import {
   Command,
   CommandInput,
@@ -16,24 +17,27 @@ import { Button } from "@/components/ui/button";
 import { getAllTopics } from "@/actions/topics";
 import { CreateTopicModal } from "./create-topic-modal";
 import { Topic } from "@/lib/type";
+import { DoubtInput } from "@/lib/validations/doubt";
 
 interface SelectTopicProps {
-  name: string;
-  register: any;
+  name: "content" | "topicId";
+  control: Control<DoubtInput>;
   errors: any;
 }
 
-export function SelectTopic({ name, register, errors }: SelectTopicProps) {
+export function SelectTopic({ name, control, errors }: SelectTopicProps) {
+  const { field } = useController({
+    name,
+    control,
+    rules: { required: true }
+  });
+
   const [topics, setTopics] = useState<Topic[]>([]);
-  const [selectedTopicId, setSelectedTopicId] = useState<number | null>(null);
-  const [selectedTopicName, setSelectedTopicName] = useState<string | null>(
-    null
-  );
+  const [selectedTopicName, setSelectedTopicName] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    // Fetch topics from the server
     async function fetchTopics() {
       try {
         const data = await getAllTopics();
@@ -47,7 +51,7 @@ export function SelectTopic({ name, register, errors }: SelectTopicProps) {
   }, []);
 
   const handleSelect = (topicId: number, topicName: string) => {
-    setSelectedTopicId(topicId);
+    field.onChange(topicId); // Update form value directly
     setSelectedTopicName(topicName);
     setIsOpen(false);
   };
@@ -55,8 +59,9 @@ export function SelectTopic({ name, register, errors }: SelectTopicProps) {
   const handleTopicCreated = async () => {
     const data = await getAllTopics();
     setTopics(data);
-    setSelectedTopicId(data[data.length - 1].id);
-    setSelectedTopicName(data[data.length - 1].name);
+    const newTopic = data[data.length - 1];
+    field.onChange(newTopic.id); // Update form value directly
+    setSelectedTopicName(newTopic.name);
     setIsModalOpen(false);
   };
 
@@ -87,7 +92,6 @@ export function SelectTopic({ name, register, errors }: SelectTopicProps) {
           </Command>
         </PopoverContent>
       </Popover>
-      <input type="hidden" {...register(name)} value={selectedTopicId || ""} />
       {errors[name] && (
         <p className="text-red-500 text-sm mt-1">{errors[name].message}</p>
       )}

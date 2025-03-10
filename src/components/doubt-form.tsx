@@ -14,6 +14,7 @@ import { SelectTopic } from "./select-topic";
 export default function DoubtForm() {
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<DoubtInput>({
@@ -70,11 +71,8 @@ export default function DoubtForm() {
           <Button type="submit" disabled={isPending}>
             {isPending ? "Creating..." : "Submit"}
           </Button>
-          <SelectTopic
-            name="topicId"
-            register={register}
-            errors={errors}
-          />
+
+          <SelectTopic name="topicId" control={control} errors={errors} />
         </div>
       </form>
     </div>
