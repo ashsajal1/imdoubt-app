@@ -29,11 +29,13 @@ export function SelectTopic({ name, control, errors }: SelectTopicProps) {
   const { field } = useController({
     name,
     control,
-    rules: { required: true }
+    rules: { required: true },
   });
 
   const [topics, setTopics] = useState<Topic[]>([]);
-  const [selectedTopicName, setSelectedTopicName] = useState<string | null>(null);
+  const [selectedTopicName, setSelectedTopicName] = useState<string | null>(
+    null
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -68,11 +70,16 @@ export function SelectTopic({ name, control, errors }: SelectTopicProps) {
   return (
     <div>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
-        <PopoverTrigger asChild>
-          <Button variant="outline" className="w-full">
-            {selectedTopicName || "Select a topic"}
-          </Button>
-        </PopoverTrigger>
+        <div className="flex items-center gap-2">
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="w-full">
+              {selectedTopicName || "Select a topic"}
+            </Button>
+          </PopoverTrigger>
+          {errors[name] && (
+            <p className="text-red-500 text-sm mt-1">{errors[name].message}</p>
+          )}
+        </div>
         <PopoverContent className="w-full p-0">
           <Command>
             <CommandInput placeholder="Search topics..." />
@@ -92,9 +99,7 @@ export function SelectTopic({ name, control, errors }: SelectTopicProps) {
           </Command>
         </PopoverContent>
       </Popover>
-      {errors[name] && (
-        <p className="text-red-500 text-sm mt-1">{errors[name].message}</p>
-      )}
+
       <CreateTopicModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
