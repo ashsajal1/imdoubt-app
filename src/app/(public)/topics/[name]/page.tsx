@@ -1,4 +1,3 @@
-
 import { db } from "@/db/drizzle";
 import { doubts, topics, doubtReactions } from "@/db/schema";
 import { DoubtCard } from "@/components/doubt-card";
@@ -53,12 +52,12 @@ export default async function TopicPage({ params }: TopicPageProps) {
     })
     .from(doubts)
     .leftJoin(topics, eq(doubts.topic_id, topics.id))
-    .where(eq(topics.name, params.name))
+    .where(sql`LOWER(${topics.name}) = LOWER(${params.name})`)
     .orderBy(doubts.date_time);
 
   const doubtsWithUserNames = await Promise.all(
     doubtsList.map(async (doubt) => {
-      const user = doubt.user_id 
+      const user = doubt.user_id
         ? await clerkClient.users.getUser(doubt.user_id)
         : null;
 
@@ -71,9 +70,7 @@ export default async function TopicPage({ params }: TopicPageProps) {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">
-        Doubts about {params.name}
-      </h1>
+      <h1 className="text-2xl font-bold mb-6">Doubts about {params.name}</h1>
       <div className="mt-8">
         {doubtsWithUserNames.length === 0 ? (
           <p className="text-center text-gray-500">
