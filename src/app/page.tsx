@@ -3,7 +3,7 @@ import DoubtForm from "@/components/doubt-form";
 import { db } from "@/db/drizzle";
 import { doubts, doubtReactions, topics } from "@/db/schema"; // Add topics import
 import { DoubtCard } from "@/components/doubt-card";
-import { sql, eq } from "drizzle-orm";
+import { sql, eq, desc } from "drizzle-orm";
 import { TopicList } from "@/components/topic-list";
 import { Badge } from "@/components/ui/badge";
 
@@ -20,7 +20,7 @@ export default async function Home() {
       user_id: doubts.user_id,
       right_count: doubts.right_count,
       wrong_count: doubts.wrong_count,
-      topic_name: topics.name, // Add this line
+      topic_name: topics.name,
       userReaction: userId
         ? sql<"right" | "wrong" | null>`
         CASE 
@@ -43,7 +43,8 @@ export default async function Home() {
         : sql<"right" | "wrong" | null>`NULL`,
     })
     .from(doubts)
-    .leftJoin(topics, eq(doubts.topic_id, topics.id)) // Add this line
+    .leftJoin(topics, eq(doubts.topic_id, topics.id)) 
+    .orderBy(desc(doubts.date_time))
     .limit(5);
 
   // Fetch user details for each doubt
